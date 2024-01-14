@@ -8,8 +8,6 @@ width = 1412
 height = 742
 delay1 = 0
 delay2 = 0
-p_x = [0]
-b_x = [width - 35]
 screen = pygame.display.set_mode((width, height))
 pygame.display.set_caption("Танчики")
 clock = pygame.time.Clock()
@@ -25,14 +23,18 @@ blue_hearts = pygame.sprite.Group()
 pink_hearts = pygame.sprite.Group()
 group_of_sprites = [tank1, tank2, vertical_borders, horizontal_borders,
                     bullet_group, aptek_group, barrier_group]
+
+font = pygame.font.Font(None, 60)
 FPS = 100
 WHITE = (255, 255, 255)
 BLACK = (0, 0, 0)
 GRAY = (34, 34, 34)
+GRAY1 = (80, 80, 80)
 LIGHT_BLUE = (64, 128, 255)
-BLUE = (0, 49, 82)
+BLUE = (116, 146, 255)
 YELLOW = (225, 225, 0)
 PINK = (230, 50, 230)
+ORANGE = (245, 138, 39)
 
 
 def terminate():
@@ -77,31 +79,14 @@ def generate_level(level):
             elif level[y][x] == 'H':
                 Apteka(x, y)
 
-
-def generate_heart_p():
-    PinkHeart(p_x[0], 0)
-    p_x[0] += 35 + 5
-    return p_x
-
-def generate_heart_b():
-    BlueHeart(b_x[0], 0)
-    b_x[0] -= 35 + 5
-    return b_x
-
-
-def start_screen():
-    intro_text = ['Игра "Танки"',
-                  'Управление:',
-                  'Жёлтый танк: для движения кнопки WASD,',
-                  ' для стрельбы клавиша F',
-                  'Синий танк: для движения стрелки вверх, вниз,',
-                  ' вправо, влево, для стрельбы ENTER(RETURN)']
-
-    fon = pygame.transform.scale(load_image('fon.jpeg'), (width, height))
+def draw():
+    intro_text = ['Игра "ТАНКИ"']
+    fon = pygame.transform.scale(load_image('fon 5.jpg'), (width, height))
     screen.blit(fon, (0, 0))
-    font = pygame.font.Font(None, 80)
-    font1 = pygame.font.Font(None, 40)
-    text_coord = 120
+    # screen.fill(BLUE)
+    font = pygame.font.Font('TunnelFront/TunnelFront.ttf', 100)
+    font1 = pygame.font.Font('TunnelFront/TunnelFront.ttf', 40)
+    text_coord = 80
     for line in intro_text:
         if line == intro_text[0]:
             string_rendered = font.render(line, 1, BLACK)
@@ -113,61 +98,108 @@ def start_screen():
         intro_rect.x = (width / 2) - (string_rendered.get_width() / 2)
         text_coord += intro_rect.height
         screen.blit(string_rendered, intro_rect)
-    font2 = pygame.font.Font(None, 40)
-    button_coord = text_coord + 50
-    size = (200, 60)
-    razdel = 50
-    l1 = pygame.Surface((size[0], size[1]))
-    l2 = pygame.Surface((size[0], size[1]))
-    l3 = pygame.Surface((size[0], size[1]))
-    l1.fill(WHITE)
-    l2.fill(WHITE)
-    l3.fill(WHITE)
+    button_coord = text_coord + 80
+    size = (300, 80)
+    razdel = 20
+    l1 = load_image("button.png")
+    l2 = load_image("button.png")
+    l3 = load_image("button.png")
+    l4 = load_image("button.png")
+    t1 = pygame.transform.scale(load_image('tank_pink.png'), (200, 200))
+    t2 = pygame.transform.scale(load_image('tank_blue.png'), (200, 200))
     screen.blit(l1, ((width / 2) - (size[0] / 2), button_coord))
-    screen.blit(l2, ((width / 2) - (size[0] / 2) - razdel - size[0], button_coord))
-    screen.blit(l3, ((width / 2) + (size[0] / 2) + razdel, button_coord))
+    screen.blit(l2, ((width / 2) - (size[0] / 2), button_coord + size[1] + razdel))
+    screen.blit(l3, ((width / 2) - (size[0] / 2), button_coord + size[1] * 2 + razdel * 2))
+    screen.blit(l4, ((width / 2) - (size[0] / 2), button_coord + size[1] * 3 + razdel * 3))
 
-    l1_t1 = font2.render("лёгкий", 1, BLACK)
-    l2_t1 = font2.render("средний", 1, BLACK)
-    l3_t1 = font2.render("сложный", 1, BLACK)
-    l_t2 = font2.render("уровень", 1, BLACK)
+    l1_t1 = font1.render("лёгкий", 1, GRAY)
+    l2_t1 = font1.render("средний", 1, GRAY)
+    l3_t1 = font1.render("сложный", 1, GRAY)
+    l_t2 = font1.render("уровень", 1, GRAY)
+    l4 = font1.render("управление", 1, GRAY)
 
-    lvl_coord = button_coord + 2 + l1_t1.get_height() + 1
-    screen.blit(l_t2, ((width / 2) - (l_t2.get_width() / 2), lvl_coord))
-    screen.blit(l_t2, ((width / 2) - (size[0] / 2) - razdel -
-                       (size[0] / 2 - l_t2.get_width() / 2) - l_t2.get_width(), lvl_coord))
-    screen.blit(l_t2, ((width / 2) + (size[0] / 2) + razdel +
-                       (size[0] / 2 - l_t2.get_width() / 2), lvl_coord))
+    razdel1 = 15
+    lvl_coord = button_coord + l1_t1.get_height()
+    screen.blit(l_t2, ((width / 2) - (l_t2.get_width() / 2), lvl_coord - 7))
+    screen.blit(l_t2, ((width / 2) - (l_t2.get_width() / 2), lvl_coord + size[1] + razdel1 - 5))
+    screen.blit(l_t2, ((width / 2) - (l_t2.get_width() / 2), lvl_coord + size[1] * 2 + razdel1 * 2))
 
-    screen.blit(l2_t1, ((width / 2) - (l2_t1.get_width() / 2), button_coord + 2))
-    screen.blit(l1_t1, ((width / 2) - (size[0] / 2) - razdel -
-                       (size[0] / 2 - l1_t1.get_width() / 2) - l1_t1.get_width(), button_coord + 2))
-    screen.blit(l3_t1, ((width / 2) + (size[0] / 2) + razdel +
-                       (size[0] / 2 - l3_t1.get_width() / 2), button_coord + 2))
+    screen.blit(l1_t1, ((width / 2) - (l1_t1.get_width() / 2), button_coord + 5))
+    screen.blit(l2_t1, ((width / 2) - (l2_t1.get_width() / 2), button_coord + size[1] + razdel + 5))
+    screen.blit(l3_t1, ((width / 2) - (l3_t1.get_width() / 2), button_coord + size[1] * 2 + razdel * 2 + 5))
 
+    screen.blit(l4, ((width / 2) - (l4.get_width() / 2), button_coord + size[1] * 3 + razdel * 3 + 15))
+
+    return [size, button_coord, razdel]
+
+
+def start_screen():
+    size, button_coord, razdel = draw()
     while True:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 terminate()
             elif event.type == pygame.KEYDOWN or event.type == pygame.MOUSEBUTTONDOWN:
-                if (event.pos[0] >= ((width / 2) - (size[0] / 2) - razdel - size[0])
-                        and event.pos[0] <= ((width / 2) - (size[0] / 2) - razdel)
-                        and event.pos[1] >= button_coord and event.pos[1] <= (button_coord + size[1])):
+                if (event.pos[0] >= ((width / 2) - (size[0] / 2))
+                      and event.pos[0] <= ((width / 2) - (size[0] / 2) + size[0])
+                      and event.pos[1] >= button_coord and event.pos[1] <= (button_coord + size[1])):
                     level = 'level1.txt'
                     return level
                 elif (event.pos[0] >= ((width / 2) - (size[0] / 2))
                       and event.pos[0] <= ((width / 2) - (size[0] / 2) + size[0])
-                      and event.pos[1] >= button_coord and event.pos[1] <= (button_coord + size[1])):
+                      and event.pos[1] >= button_coord + size[1] + razdel
+                      and event.pos[1] <= (button_coord + size[1] + razdel + size[1])):
                     level = 'level2.txt'
                     return level
-                elif (event.pos[0] >= ((width / 2) + (size[0] / 2) + razdel)
+                elif (event.pos[0] >= ((width / 2) - (size[0] / 2))
                       and event.pos[0] <= ((width / 2) - (size[0] / 2) + size[0])
-                      and event.pos[1] >= button_coord and event.pos[1] <= (button_coord + size[1])):
+                      and event.pos[1] >= button_coord + size[1] * 2 + razdel * 2
+                      and event.pos[1] <= (button_coord + size[1] * 2 + razdel * 2 + size[1])):
                     level = 'level3.txt'
                     return level
+                elif (event.pos[0] >= ((width / 2) - (size[0] / 2))
+                      and event.pos[0] <= ((width / 2) - (size[0] / 2) + size[0])
+                      and event.pos[1] >= button_coord + size[1] * 3 + razdel * 3
+                      and event.pos[1] <= (button_coord + size[1] * 3 + razdel * 3 + size[1])):
+                    upravl()
+        draw()
         pygame.display.flip()
         clock.tick(FPS)
 
+
+def upravl():
+    fon = load_image('Upravlenie.png')
+    screen.blit(fon, (width / 2 - fon.get_width() / 2 + 20, height / 2 - fon.get_height() / 2))
+    while True:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                terminate()
+            if event.type == pygame.KEYDOWN or event.type == pygame.MOUSEBUTTONDOWN:
+                if event.pos[0] >= 1045 and event.pos[0] <= 1070 and (event.pos[1] >= 70 and event.pos[1] <= 100):
+                    return
+
+        pygame.display.flip()
+        clock.tick(FPS)
+
+
+def end_screen(winner, loser):
+    screen.fill((0, 0, 0))
+    fon = load_image('game_over.jpg')
+    screen.blit(fon, (0, 0))
+    font = pygame.font.Font('TunnelFront/TunnelFront.ttf', 90)
+    text_winner = font.render(winner, True, WHITE)
+    screen.blit(text_winner, (68 + 274 + 10, 378))
+    text_winner = font.render(loser, True, WHITE)
+    screen.blit(text_winner, (760 + 229 + 10, 378))
+    while True:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                terminate()
+            if event.type == pygame.KEYDOWN or event.type == pygame.MOUSEBUTTONDOWN:
+                if event.pos[0] >= 475 and event.pos[0] <= 475 + 461 and (event.pos[1] >= 569 and event.pos[1] <= 569 + 123):
+                    return
+        pygame.display.flip()
+        clock.tick(FPS)
 
 
 class Border(pygame.sprite.Sprite):
@@ -176,12 +208,12 @@ class Border(pygame.sprite.Sprite):
         if x1 == x2:
             self.add(vertical_borders)
             self.image = pygame.Surface([1, y2 - y1])
-            self.image.fill((255, 255, 255))
+            self.image.fill((0, 0, 0))
             self.rect = pygame.Rect(x1, y1, 1, y2 - y1)
         else:
             self.add(horizontal_borders)
             self.image = pygame.Surface([x2 - x1, 1])
-            self.image.fill((255, 255, 255))
+            self.image.fill((0, 0, 0))
             self.rect = pygame.Rect(x1, y1, x2 - x1, 1)
 
 
@@ -251,13 +283,19 @@ class Bullet(pygame.sprite.Sprite):
             self.rect.y -= 1
 
         for group in group_of_sprites:
-            if group != bullet_group and group != self.other:
+            if group != bullet_group and group != self.other and group != aptek_group:
                 if group == barrier_group:
                     for obj in barrier_group:
                         if pygame.sprite.collide_mask(self, obj):
                             obj.health -= 1
                             self.kill()
                             break
+                elif pygame.sprite.spritecollideany(self, group) and group == tank1:
+                    tank11.health_pink -= 1
+                    self.kill()
+                elif pygame.sprite.spritecollideany(self, group) and group == tank2:
+                    tank22.health_blue -= 1
+                    self.kill()
                 elif pygame.sprite.spritecollideany(self, group):
                     self.kill()
 
@@ -286,7 +324,7 @@ class TankPink(pygame.sprite.Sprite):
         self.direct = 'right'
         self.mask = pygame.mask.from_surface(self.image)
 
-    def update(self, p_x):
+    def update(self):
         x_old, y_old = self.rect.x, self.rect.y
         keystate = pygame.key.get_pressed()
         self.x = 0
@@ -332,23 +370,12 @@ class TankPink(pygame.sprite.Sprite):
             self.rect.y = y_old
 
         for obj in all_sprites:
-            # if obj in bullet_group and pygame.sprite.collide_mask(self, obj):
-            #     self.health_pink -= 1
-            #     for heart in pink_hearts:
-            #         if heart.rect.x == p_x - 35 - 5:
-            #             heart.kill()
-            #     if self.health_pink == 0:
-            #         self.kill()
             if obj in aptek_group and pygame.sprite.collide_mask(self, obj):
                 obj.kill()
                 self.health_pink += 1
-                generate_heart_p()
             if pygame.sprite.collide_mask(self, obj) and obj != self and obj not in aptek_group:
                 self.rect.x = x_old
                 self.rect.y = y_old
-
-        # if self.health_pink <= 0:
-        #     start_screen()
 
 
 class TankBlue(pygame.sprite.Sprite):
@@ -375,7 +402,7 @@ class TankBlue(pygame.sprite.Sprite):
         self.direct = 'left'
         self.mask = pygame.mask.from_surface(self.image)
 
-    def update(self, b_x):
+    def update(self):
         x_old, y_old = self.rect.x, self.rect.y
         keystate = pygame.key.get_pressed()
         self.x = 0
@@ -420,23 +447,13 @@ class TankBlue(pygame.sprite.Sprite):
             self.rect.y = y_old
 
         for obj in all_sprites:
-            # if obj in bullet_group and pygame.sprite.collide_mask(self, obj):
-            #     for heart in blue_hearts:
-            #         if heart.rect.x == p_x[0] + 35 + 5:
-            #             heart.kill()
-            #     self.health_blue -= 1
-            #     if self.health_blue == 0:
-            #         self.kill()
             if obj in aptek_group and pygame.sprite.collide_mask(self, obj):
-                obj.kill()
                 self.health_blue += 1
-                generate_heart_b()
+                obj.kill()
             if pygame.sprite.collide_mask(self, obj) and obj != self and obj not in aptek_group:
                 self.rect.x = x_old
                 self.rect.y = y_old
 
-        # if self.health_blue <= 0:
-        #     start_screen()
 
 
 class Apteka(pygame.sprite.Sprite):
@@ -451,7 +468,7 @@ class Apteka(pygame.sprite.Sprite):
 class Barrier(pygame.sprite.Sprite):
     def __init__(self, pos_x, pos_y):
         super().__init__(barrier_group, all_sprites)
-        self.image = load_image('kirpich2.png')
+        self.image = load_image('kaktus.png')
         self.image = pygame.transform.scale(self.image, (70, 70))
         self.rect = self.image.get_rect().move(70 * pos_x + 6, 70 * pos_y + 36)
         self.health = 2
@@ -459,7 +476,7 @@ class Barrier(pygame.sprite.Sprite):
 
     def update(self):
         if self.health == 1:
-            broken = load_image('broken_kirpich.png')
+            broken = load_image('broken_kaktus3.png')
             broken = pygame.transform.scale(broken, (70, 70))
             self.image = broken
         if self.health <= 0:
@@ -481,7 +498,6 @@ class BlueHeart(pygame.sprite.Sprite):
         self.image = pygame.transform.scale(self.image, (35, 35))
         self.rect = self.image.get_rect().move(pos_x, pos_y)
 
-
 level = start_screen()
 Border(5, 35, width - 5, 35)
 Border(5, height - 5, width - 5, height - 5)
@@ -492,10 +508,10 @@ tank1.add(tank11)
 tank22 = TankBlue()
 tank2.add(tank22)
 generate_level(load_level(level))
-# for i in range(5):
-#     p_x = generate_heart_p()
-# for i in range(5):
-#     b_x = generate_heart_b()
+PinkHeart(25, 0)
+BlueHeart(width - 35, 0)
+fon = pygame.transform.scale(load_image('orange.jpeg'), (width - 10, height - 35 - 5))
+
 running = True
 
 while running:
@@ -506,19 +522,30 @@ while running:
             if event.key == pygame.K_RETURN:
                 if delay1 == 0:
                     bullet = Bullet(tank22.rect.x, tank22.rect.y, tank22.rect.width, tank22.rect.height, tank22.direct, tank2)
-                    delay1 = 40
+                    delay1 = 60
             if event.key == pygame.K_f:
                 if delay2 == 0:
                     bullet = Bullet(tank11.rect.x, tank11.rect.y, tank11.rect.width, tank11.rect.height, tank11.direct, tank1)
-                    delay2 = 40
-    screen.fill((0, 0, 0))
-    tank1.update(p_x)
-    tank2.update(b_x)
+                    delay2 = 60
+    screen.fill((255, 255, 255))
+    screen.blit(fon, (5, 35))
+    tank1.update()
+    tank2.update()
     bullet_group.update()
     all_sprites.draw(screen)
     bullet_group.draw(screen)
     tank1.draw(screen)
     tank2.draw(screen)
+    text_pink_hearts = font.render(str(tank11.health_pink), True, BLACK)
+    screen.blit(text_pink_hearts, [0, 0])
+    text_blue_hearts = font.render(str(tank22.health_blue), True, BLACK)
+    screen.blit(text_blue_hearts, [width - 25 - 35, 0])
+    if tank11.health_pink == 0:
+        end_screen('синий', 'розовый')
+        terminate()
+    elif tank22.health_blue == 0:
+        end_screen('розовый', 'синий')
+        terminate()
     all_sprites.update()
     if delay1 != 0:
         delay1 -= 1
