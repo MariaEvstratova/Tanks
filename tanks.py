@@ -575,6 +575,7 @@ generate_level(load_level(level))
 PinkHeart(25, 0)
 BlueHeart(width - 35, 0)
 fon = pygame.transform.scale(load_image('orange.jpeg'), (width - 10, height - 35 - 5))
+green_fon = pygame.transform.scale(load_image('green_fon.jpg'), (width, height))
 
 running = True
 
@@ -593,7 +594,7 @@ while running:
                     shoot.play()
                     bullet = Bullet(tank11.rect.x, tank11.rect.y, tank11.rect.width, tank11.rect.height, tank11.direct, tank1)
                     delay2 = 60
-    screen.fill(WHITE)
+    screen.blit(green_fon, (0, 0))
     screen.blit(fon, (5, 35))
     tank1.update()
     tank2.update()
