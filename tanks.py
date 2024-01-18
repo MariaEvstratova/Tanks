@@ -134,6 +134,8 @@ def draw():
 
 
 def start_screen():
+    pygame.mixer.music.load('data/music_fon.mp3')
+    pygame.mixer.music.play()
     size, button_coord, razdel = draw()
     while True:
         for event in pygame.event.get():
@@ -144,18 +146,30 @@ def start_screen():
                       and event.pos[0] <= ((width / 2) - (size[0] / 2) + size[0])
                       and event.pos[1] >= button_coord and event.pos[1] <= (button_coord + size[1])):
                     level = 'level1.txt'
+                    pygame.mixer.music.pause()
+                    pygame.mixer.music.load('data/music_for_game.mp3')
+                    pygame.mixer.music.set_volume(0.5)
+                    pygame.mixer.music.play()
                     return level
                 elif (event.pos[0] >= ((width / 2) - (size[0] / 2))
                       and event.pos[0] <= ((width / 2) - (size[0] / 2) + size[0])
                       and event.pos[1] >= button_coord + size[1] + razdel
                       and event.pos[1] <= (button_coord + size[1] + razdel + size[1])):
                     level = 'level2.txt'
+                    pygame.mixer.music.pause()
+                    pygame.mixer.music.load('data/music_for_game.mp3')
+                    pygame.mixer.music.set_volume(0.5)
+                    pygame.mixer.music.play()
                     return level
                 elif (event.pos[0] >= ((width / 2) - (size[0] / 2))
                       and event.pos[0] <= ((width / 2) - (size[0] / 2) + size[0])
                       and event.pos[1] >= button_coord + size[1] * 2 + razdel * 2
                       and event.pos[1] <= (button_coord + size[1] * 2 + razdel * 2 + size[1])):
                     level = 'level3.txt'
+                    pygame.mixer.music.pause()
+                    pygame.mixer.music.load('data/music_for_game.mp3')
+                    pygame.mixer.music.set_volume(0.5)
+                    pygame.mixer.music.play()
                     return level
                 elif (event.pos[0] >= ((width / 2) - (size[0] / 2))
                       and event.pos[0] <= ((width / 2) - (size[0] / 2) + size[0])
@@ -183,6 +197,9 @@ def upravl():
 
 
 def end_screen(winner, loser):
+    pygame.mixer.music.pause()
+    pygame.mixer.music.load('data/music_fon.mp3')
+    pygame.mixer.music.play()
     screen.fill((0, 0, 0))
     fon = load_image('game_over.jpg')
     screen.blit(fon, (0, 0))
@@ -225,12 +242,12 @@ class Border(pygame.sprite.Sprite):
         if x1 == x2:
             self.add(vertical_borders)
             self.image = pygame.Surface([1, y2 - y1])
-            self.image.fill((0, 0, 0))
+            self.image.fill(BLACK)
             self.rect = pygame.Rect(x1, y1, 1, y2 - y1)
         else:
             self.add(horizontal_borders)
             self.image = pygame.Surface([x2 - x1, 1])
-            self.image.fill((0, 0, 0))
+            self.image.fill(BLACK)
             self.rect = pygame.Rect(x1, y1, x2 - x1, 1)
 
 
@@ -389,6 +406,7 @@ class TankPink(pygame.sprite.Sprite):
         for obj in all_sprites:
             if obj in aptek_group and pygame.sprite.collide_mask(self, obj):
                 obj.kill()
+                cure.play()
                 self.health_pink += 1
             if pygame.sprite.collide_mask(self, obj) and obj != self and obj not in aptek_group:
                 self.rect.x = x_old
@@ -466,6 +484,7 @@ class TankBlue(pygame.sprite.Sprite):
         for obj in all_sprites:
             if obj in aptek_group and pygame.sprite.collide_mask(self, obj):
                 self.health_blue += 1
+                cure.play()
                 obj.kill()
             if pygame.sprite.collide_mask(self, obj) and obj != self and obj not in aptek_group:
                 self.rect.x = x_old
@@ -516,6 +535,8 @@ class BlueHeart(pygame.sprite.Sprite):
         self.rect = self.image.get_rect().move(pos_x, pos_y)
 
 
+shoot = pygame.mixer.Sound('data/sound_shoot.mp3')
+cure = pygame.mixer.Sound('data/sound_cure.mp3')
 level = start_screen()
 Border(5, 35, width - 5, 35)
 Border(5, height - 5, width - 5, height - 5)
@@ -539,13 +560,15 @@ while running:
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_RETURN:
                 if delay1 == 0:
+                    shoot.play()
                     bullet = Bullet(tank22.rect.x, tank22.rect.y, tank22.rect.width, tank22.rect.height, tank22.direct, tank2)
                     delay1 = 60
             if event.key == pygame.K_f:
                 if delay2 == 0:
+                    shoot.play()
                     bullet = Bullet(tank11.rect.x, tank11.rect.y, tank11.rect.width, tank11.rect.height, tank11.direct, tank1)
                     delay2 = 60
-    screen.fill((255, 255, 255))
+    screen.fill(WHITE)
     screen.blit(fon, (5, 35))
     tank1.update()
     tank2.update()
