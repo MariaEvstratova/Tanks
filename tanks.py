@@ -208,7 +208,7 @@ def end_screen(winner, loser):
     kakti.add(kaktus2)
     font = pygame.font.Font('TunnelFront/TunnelFront.ttf', 90)
     text_winner = font.render(winner, True, WHITE)
-    text_winner = font.render(loser, True, WHITE)
+    text_loser = font.render(loser, True, WHITE)
     while True:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -236,7 +236,7 @@ def end_screen(winner, loser):
         screen.fill((0, 0, 0))
         screen.blit(fon, (0, 0))
         screen.blit(text_winner, (68 + 274 + 10, 378))
-        screen.blit(text_winner, (760 + 229 + 10, 378))
+        screen.blit(text_loser, (760 + 229 + 10, 378))
         kakti.update()
         kakti.draw(screen)
         pygame.display.flip()
