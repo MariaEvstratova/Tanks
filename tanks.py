@@ -22,8 +22,9 @@ tank1 = pygame.sprite.Group()
 tank2 = pygame.sprite.Group()
 blue_hearts = pygame.sprite.Group()
 pink_hearts = pygame.sprite.Group()
+kakti = pygame.sprite.Group()
 group_of_sprites = [tank1, tank2, vertical_borders, horizontal_borders,
-                    bullet_group, aptek_group, barrier_group]
+                    bullet_group, aptek_group, barrier_group, kakti]
 
 font = pygame.font.Font(None, 60)
 FPS = 100
@@ -135,13 +136,13 @@ def draw():
 
 def start_screen():
     pygame.mixer.music.load('data/music_fon.mp3')
-    pygame.mixer.music.play()
+    pygame.mixer.music.play(-1)
     size, button_coord, razdel = draw()
     while True:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 terminate()
-            elif event.type == pygame.KEYDOWN or event.type == pygame.MOUSEBUTTONDOWN:
+            elif event.type == pygame.MOUSEBUTTONDOWN:
                 if (event.pos[0] >= ((width / 2) - (size[0] / 2))
                       and event.pos[0] <= ((width / 2) - (size[0] / 2) + size[0])
                       and event.pos[1] >= button_coord and event.pos[1] <= (button_coord + size[1])):
@@ -149,7 +150,7 @@ def start_screen():
                     pygame.mixer.music.pause()
                     pygame.mixer.music.load('data/music_for_game.mp3')
                     pygame.mixer.music.set_volume(0.5)
-                    pygame.mixer.music.play()
+                    pygame.mixer.music.play(-1)
                     return level
                 elif (event.pos[0] >= ((width / 2) - (size[0] / 2))
                       and event.pos[0] <= ((width / 2) - (size[0] / 2) + size[0])
@@ -159,7 +160,7 @@ def start_screen():
                     pygame.mixer.music.pause()
                     pygame.mixer.music.load('data/music_for_game.mp3')
                     pygame.mixer.music.set_volume(0.5)
-                    pygame.mixer.music.play()
+                    pygame.mixer.music.play(-1)
                     return level
                 elif (event.pos[0] >= ((width / 2) - (size[0] / 2))
                       and event.pos[0] <= ((width / 2) - (size[0] / 2) + size[0])
@@ -169,7 +170,7 @@ def start_screen():
                     pygame.mixer.music.pause()
                     pygame.mixer.music.load('data/music_for_game.mp3')
                     pygame.mixer.music.set_volume(0.5)
-                    pygame.mixer.music.play()
+                    pygame.mixer.music.play(-1)
                     return level
                 elif (event.pos[0] >= ((width / 2) - (size[0] / 2))
                       and event.pos[0] <= ((width / 2) - (size[0] / 2) + size[0])
@@ -188,7 +189,7 @@ def upravl():
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 terminate()
-            if event.type == pygame.KEYDOWN or event.type == pygame.MOUSEBUTTONDOWN:
+            if event.type == pygame.MOUSEBUTTONDOWN:
                 if event.pos[0] >= 1045 and event.pos[0] <= 1070 and (event.pos[1] >= 70 and event.pos[1] <= 100):
                     return
 
@@ -199,20 +200,20 @@ def upravl():
 def end_screen(winner, loser):
     pygame.mixer.music.pause()
     pygame.mixer.music.load('data/music_fon.mp3')
-    pygame.mixer.music.play()
-    screen.fill((0, 0, 0))
+    pygame.mixer.music.play(-1)
     fon = load_image('game_over.jpg')
-    screen.blit(fon, (0, 0))
+    kaktus1 = Kaktus(264, 44, 1)
+    kaktus2 = Kaktus(987, 44, 0)
+    kakti.add(kaktus1)
+    kakti.add(kaktus2)
     font = pygame.font.Font('TunnelFront/TunnelFront.ttf', 90)
     text_winner = font.render(winner, True, WHITE)
-    screen.blit(text_winner, (68 + 274 + 10, 378))
     text_winner = font.render(loser, True, WHITE)
-    screen.blit(text_winner, (760 + 229 + 10, 378))
     while True:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 terminate()
-            if event.type == pygame.KEYDOWN or event.type == pygame.MOUSEBUTTONDOWN:
+            if event.type == pygame.MOUSEBUTTONDOWN:
                 if event.pos[0] >= 273 and event.pos[0] <= 273 + 407 and (event.pos[1] >= 564 and event.pos[1] <= 564 + 109):
                     for i in group_of_sprites:
                         for j in i:
@@ -232,8 +233,32 @@ def end_screen(winner, loser):
                     return tank11, tank22
                 elif event.pos[0] >= 727 and event.pos[0] <= 727 + 407 and (event.pos[1] >= 564 and event.pos[1] <= 564 + 109):
                     terminate()
+        screen.fill((0, 0, 0))
+        screen.blit(fon, (0, 0))
+        screen.blit(text_winner, (68 + 274 + 10, 378))
+        screen.blit(text_winner, (760 + 229 + 10, 378))
+        kakti.update()
+        kakti.draw(screen)
         pygame.display.flip()
         clock.tick(FPS)
+
+
+class Kaktus(pygame.sprite.Sprite):
+    def __init__(self, pos_x, pos_y, pos):
+        super().__init__(kakti, all_sprites)
+        self.image = load_image('kakt.png')
+        self.image = pygame.transform.scale(self.image, (147, 265))
+        self.rect = self.image.get_rect().move(pos_x, pos_y)
+        self.speed = 30
+        if pos == 0:
+            self.image = pygame.transform.flip(self.image, 1, 0)
+
+    def update(self):
+        if self.speed == 30:
+            self.image = pygame.transform.flip(self.image, 1, 0)
+            self.speed = 0
+        else:
+            self.speed += 1
 
 
 class Border(pygame.sprite.Sprite):
